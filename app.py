@@ -131,6 +131,11 @@ if not st.session_state.analysis_complete:
                         st.info("🤖 Using advanced browser rendering...")
                     scraped_data = scrape_website_smart(website_url, use_selenium=use_selenium)
                     
+                    # Show scraping status for debugging
+                    if 'error' in scraped_data:
+                        st.warning(f"⚠️ Scraping issue: {scraped_data['error']}")
+                        st.info("Continuing with questionnaire-based analysis...")
+                    
                     # Prepare answers
                     answers = {
                         'industry': industry,
