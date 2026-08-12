@@ -22,8 +22,9 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Test outputs (keep docs/ folder)
+# Test outputs and documentation (keep locally only)
 test_report.pdf
+docs/
 
 # Logs
 *.log
