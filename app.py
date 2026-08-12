@@ -260,7 +260,7 @@ else:
 st.markdown("---")
 st.markdown(
     "<p style='text-align: center; color: gray; font-size: 14px;'>"
-    "Growth Leak Score Analyzer • Built for AI automation agencies"
+    "Growth Leak Score Analyzer"
     "</p>",
     unsafe_allow_html=True
 )
