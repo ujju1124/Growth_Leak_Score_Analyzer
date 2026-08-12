@@ -75,8 +75,9 @@ def scrape_with_selenium(url: str, wait_time: int = 5) -> Dict:
         # Create a copy for content extraction (don't modify the original soup for feature detection)
         content_soup = BeautifulSoup(page_source, 'html.parser')
         
-        # Remove navigation, headers, footers, scripts, and styles BEFORE extracting text
-        for element in content_soup(['script', 'style', 'nav', 'header', 'footer']):
+        # Remove only navigation, scripts, and styles BEFORE extracting text
+        # DO NOT remove <header> or <footer> as they often contain important content
+        for element in content_soup(['script', 'style', 'nav']):
             element.decompose()
         
         # Try to extract from <main> or main content area first

@@ -43,8 +43,9 @@ def scrape_website(url: str) -> Dict:
         # Create a copy for content extraction (don't modify the original soup for feature detection)
         content_soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Remove navigation, headers, footers, scripts, and styles BEFORE extracting text
-        for element in content_soup(['script', 'style', 'nav', 'header', 'footer']):
+        # Remove only navigation, scripts, and styles BEFORE extracting text
+        # DO NOT remove <header> or <footer> as they often contain important content
+        for element in content_soup(['script', 'style', 'nav']):
             element.decompose()
         
         # Try to extract from <main> or main content area first
