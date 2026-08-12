@@ -35,8 +35,17 @@ def scrape_with_selenium(url: str, wait_time: int = 5) -> Dict:
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--window-size=1920,1080')
         chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-        chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        chrome_options.add_experimental_option('useAutomationExtension', False)
+        
+        # Additional options for cloud environments
+        chrome_options.add_argument('--disable-software-rasterizer')
+        chrome_options.add_argument('--disable-extensions')
+        chrome_options.add_argument('--disable-setuid-sandbox')
+        
+        # Only add experimental options on Windows (Streamlit Cloud doesn't support these)
+        import platform
+        if platform.system() == 'Windows':
+            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+            chrome_options.add_experimental_option('useAutomationExtension', False)
         
         # User agent
         chrome_options.add_argument(
@@ -44,9 +53,22 @@ def scrape_with_selenium(url: str, wait_time: int = 5) -> Dict:
             '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         )
         
+        # On Linux (Streamlit Cloud), use chromium binary path
+        if platform.system() == 'Linux':
+            chrome_options.binary_location = '/usr/bin/chromium'
+        
         # Initialize driver
-        service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service, options=chrome_options)
+        try:
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=chrome_options)
+        except Exception as e:
+            # Fallback for Streamlit Cloud - try without webdriver-manager
+            if platform.system() == 'Linux':
+                service = Service('/usr/bin/chromedriver')
+                driver = webdriver.Chrome(service=service, options=chrome_options)
+            else:
+                raise e
+        
         driver.set_page_load_timeout(15)
         
         # Load the page
